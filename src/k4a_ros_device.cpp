@@ -71,6 +71,7 @@ K4AROSDevice::K4AROSDevice()
   this->declare_parameter("recording_file", rclcpp::ParameterValue(""));
   this->declare_parameter("recording_loop_enabled", rclcpp::ParameterValue(false));
   this->declare_parameter("body_tracking_enabled", rclcpp::ParameterValue(false));
+  this->declare_parameter("body_tracking_cpu", rclcpp::ParameterValue(false));
   this->declare_parameter("body_tracking_smoothing_factor", rclcpp::ParameterValue(0.0f));
   this->declare_parameter("rescale_ir_to_mono8", rclcpp::ParameterValue(false));
   this->declare_parameter("ir_mono8_scaling_factor", rclcpp::ParameterValue(1.0f));
@@ -347,7 +348,11 @@ k4a_result_t K4AROSDevice::startCameras()
   // When calibration is initialized the body tracker can be created with the device calibration
   if (params_.body_tracking_enabled)
   {
-    k4abt_tracker_ = k4abt::tracker::create(calibration_data_.k4a_calibration_);
+    k4abt_tracker_configuration_t tracker_conf = K4ABT_TRACKER_CONFIG_DEFAULT;
+    if (params_.body_tracking_cpu) {
+      tracker_conf.processing_mode = K4ABT_TRACKER_PROCESSING_MODE_CPU;
+    }
+    k4abt_tracker_ = k4abt::tracker::create(calibration_data_.k4a_calibration_, tracker_conf);
     k4abt_tracker_.set_temporal_smoothing(params_.body_tracking_smoothing_factor);
   }
 #endif
@@ -768,7 +773,11 @@ k4a_result_t K4AROSDevice::getBodyMarker(const k4abt_body_t& body, std::shared_p
 
   // Set the lifetime to 0.25 to prevent flickering for even 5fps configurations.
   // New markers with the same ID will replace old markers as soon as they arrive.
-  marker_msg->lifetime = rclcpp::Duration(0.25);
+  int32_t seconds = 0;
+  if (params_.body_tracking_cpu) {
+    seconds = 1;
+  }
+  marker_msg->lifetime = rclcpp::Duration(seconds, 250000000);
   marker_msg->id = body.id * 100 + jointType;
   marker_msg->type = Marker::SPHERE;
 

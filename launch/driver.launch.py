@@ -114,6 +114,10 @@ def generate_launch_description():
         default_value="false",
         description="If set to true the joint positions will be published as marker arrays"),
     DeclareLaunchArgument(
+        'body_tracking_cpu',
+        default_value="false",
+        description="If set to true, body tracking will work on CPU"),
+    DeclareLaunchArgument(
         'body_tracking_smoothing_factor',
         default_value="0.0",
         description="Set between 0 for no smoothing and 1 for full smoothing"),
@@ -156,6 +160,7 @@ def generate_launch_description():
             {'recording_file': launch.substitutions.LaunchConfiguration('recording_file')},
             {'recording_loop_enabled': launch.substitutions.LaunchConfiguration('recording_loop_enabled')},
             {'body_tracking_enabled': launch.substitutions.LaunchConfiguration('body_tracking_enabled')},
+            {'body_tracking_cpu': launch.substitutions.LaunchConfiguration('body_tracking_cpu')},
             {'body_tracking_smoothing_factor': launch.substitutions.LaunchConfiguration('body_tracking_smoothing_factor')},
             {'rescale_ir_to_mono8': launch.substitutions.LaunchConfiguration('rescale_ir_to_mono8')},
             {'ir_mono8_scaling_factor': launch.substitutions.LaunchConfiguration('ir_mono8_scaling_factor')},
