@@ -13,7 +13,7 @@ class Detector:
         self.chunksize = chunksize
         self.history = collections.deque(maxlen=int(history_seconds*self.samplingrate/self.chunksize))
         file_path = os.path.dirname(os.path.realpath(__file__)) 
-        refdata = np.load(os.path.join(file_path,"ref.npy"), allow_pickle=True)
+        refdata = np.load(os.path.join(file_path,"ref2.npy"), allow_pickle=True)
         refchunks = np.split(refdata, np.arange(self.chunksize,len(refdata),self.chunksize))
         refs = np.array([self.__process_chunk(refchunk) for refchunk in refchunks])
         self.ref = np.mean(refs, axis=0)

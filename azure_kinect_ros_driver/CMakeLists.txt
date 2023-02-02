@@ -134,8 +134,11 @@ install(PROGRAMS
   ${PROJECT_NAME}/microphone_node.py
   ${PROJECT_NAME}/play_audio.py
   ${PROJECT_NAME}/audio_labeler.py
+  ${PROJECT_NAME}/coffee_feedback.py
   ${PROJECT_NAME}/utils.py
   ${PROJECT_NAME}/ref.npy
+  ${PROJECT_NAME}/ref2.npy
+  ${PROJECT_NAME}/.token
   ${PROJECT_NAME}/data_recorder.py
   ${PROJECT_NAME}/tf.py
   ${PROJECT_NAME}/repub_for_video.py

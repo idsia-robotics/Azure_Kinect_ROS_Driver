@@ -21,7 +21,7 @@ class DataRecorder(rclpy.node.Node):
                         # "tf": TFMessage, 
                         "body_tracking_data": MarkerArray}
         self.repubs = {}
-        self.skeleton_frame = self.declare_parameter("skeleton_frame", "camera_tripod").value
+        self.skeleton_frame = self.declare_parameter("skeleton_frame", "depth_camera_link").value
         self.tf_utils = TF(self)
         for topic, msg_type in topic_to_rec.items():
             self.create_subscription(msg_type, topic, self.create_topic_cb(topic), 10)
