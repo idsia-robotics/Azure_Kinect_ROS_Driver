@@ -56,3 +56,5 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+azure_kinect_ros_driver/azure_kinect_ros_driver/.token

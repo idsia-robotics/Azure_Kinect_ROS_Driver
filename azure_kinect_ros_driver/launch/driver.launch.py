@@ -46,7 +46,10 @@ def generate_launch_description():
 
     # Variable used for the flag to publish a standalone azure_description instead of the default robot_description parameter
     remappings = [('robot_description', 'azure_description')]
-
+    use_feedback_node = launch.substitutions.PythonExpression(
+        [launch.substitutions.LaunchConfiguration('audio_feedback'), ' or ', launch.substitutions.LaunchConfiguration('telegram_feedback')]
+        )
+    
     return LaunchDescription([
     DeclareLaunchArgument(
         'overwrite_robot_description',
@@ -118,6 +121,22 @@ def generate_launch_description():
         default_value="false",
         description="If set to true the data recorder will be enabled to publish data for our rosbags"),
     DeclareLaunchArgument(
+        'skeleton_frame',
+        default_value="depth_camera_link",
+        description="Used by recorder for bags. Specify the frame to be used for the recorded body tracking joints"),
+    DeclareLaunchArgument(
+        'publish_static_coffee',
+        default_value="false",
+        description="If True, publish the static transforms for camera, tripod and coffee machine"),
+    DeclareLaunchArgument(
+        'audio_feedback',
+        default_value="true",
+        description="If True, publish the static transforms for camera, tripod and coffee machine"),
+    DeclareLaunchArgument(
+        'telegram_feedback',
+        default_value="false",
+        description="If True, publish the static transforms for camera, tripod and coffee machine"),
+    DeclareLaunchArgument(
         'body_tracking_enabled',
         default_value="false",
         description="If set to true the joint positions will be published as marker arrays"),
@@ -188,9 +207,23 @@ def generate_launch_description():
         parameters = []),
     launch_ros.actions.Node(
         package='azure_kinect_ros_driver',
+        executable='coffee_feedback.py',
+        name='coffee_feedback_node',
+        parameters = [
+            {'audio_feedback': launch.substitutions.LaunchConfiguration('audio_feedback')},
+            {'telegram_feedback': launch.substitutions.LaunchConfiguration('telegram_feedback')}],
+        condition=conditions.IfCondition(use_feedback_node)
+        # condition=conditions.IfCondition(
+        #     launch.substitutions.PythonExpression(
+        #         [launch.substitutions.LaunchConfiguration('audio_feedback'), "' or '", launch.substitutions.LaunchConfiguration('telegram_feedback')]
+        #     )
+        # )
+    ),
+    launch_ros.actions.Node(
+        package='azure_kinect_ros_driver',
         executable='data_recorder.py',
         name='data_recorder',
-        parameters = [],
+        parameters=[{'skeleton_frame': launch.substitutions.LaunchConfiguration('skeleton_frame')}],
         condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("recording_node"))),
     # If flag overwrite_robot_description is set:
     launch_ros.actions.Node(
@@ -224,10 +257,12 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         output='screen',
-        arguments=['0','0', '1.95', '1.0471975', '0.523598', '0', 'camera_tripod', 'camera_base']),
+        arguments=['0','0', '1.95', '1.0471975', '0.523598', '0', 'camera_tripod', 'camera_base'],
+        condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("publish_static_coffee"))),
     launch_ros.actions.Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         output='screen',
-        arguments=['0.55','0.30', '1.22', '0', '0', '0', 'camera_tripod', 'coffe_machine']),
+        arguments=['0.55','0.30', '1.22', '0', '0', '0', 'camera_tripod', 'coffee_machine'],
+        condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("publish_static_coffee"))),
     ])
