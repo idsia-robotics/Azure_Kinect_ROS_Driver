@@ -130,11 +130,11 @@ def generate_launch_description():
         description="If True, publish the static transforms for camera, tripod and coffee machine"),
     DeclareLaunchArgument(
         'audio_feedback',
-        default_value="true",
+        default_value="True",
         description="If True, publish the static transforms for camera, tripod and coffee machine"),
     DeclareLaunchArgument(
         'telegram_feedback',
-        default_value="false",
+        default_value="False",
         description="If True, publish the static transforms for camera, tripod and coffee machine"),
     DeclareLaunchArgument(
         'body_tracking_enabled',
