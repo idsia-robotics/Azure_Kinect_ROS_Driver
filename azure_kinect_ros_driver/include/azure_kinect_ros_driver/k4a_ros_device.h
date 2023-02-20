@@ -26,6 +26,7 @@
 
 #if defined(K4A_BODY_TRACKING)
 #include <visualization_msgs/msg/marker_array.hpp>
+#include <azure_kinect_ros_msgs/msg/marker_array_stamped.hpp>
 #include <k4abt.hpp>
 #endif
 
@@ -136,7 +137,7 @@ class K4AROSDevice : public rclcpp::Node
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pointcloud_publisher_;
 
 #if defined(K4A_BODY_TRACKING)
-  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr body_marker_publisher_;
+  rclcpp::Publisher<azure_kinect_ros_msgs::msg::MarkerArrayStamped>::SharedPtr body_marker_publisher_;
 
   image_transport::Publisher body_index_map_publisher_;
 #endif

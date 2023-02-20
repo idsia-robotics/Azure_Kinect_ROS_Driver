@@ -33,7 +33,6 @@ public:
   void initialize(const k4a::device& device, const k4a_depth_mode_t depthMode, const k4a_color_resolution_t resolution,
                   const K4AROSDeviceParams& params);
   void initialize(const k4a::playback& k4a_playback_handle, const K4AROSDeviceParams& params);
-  k4a_float2_t convert3Dto2D(const k4a_float3_t& source_point3d);
   int getDepthWidth();
   int getDepthHeight();
   int getColorWidth();

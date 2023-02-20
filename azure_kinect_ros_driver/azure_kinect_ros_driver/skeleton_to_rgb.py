@@ -15,18 +15,18 @@ class SkeletonToRGB(rclpy.node.Node):
         super().__init__("skeleton_to_rgb")
 
 
-        self.create_subscription(MarkerArray, "/body_tracking_data", self.markers_cb, 1)
-        self.markers_pub = self.create_publisher(MarkerArrayStamped, "/body_tracking_data_stamped", 1)
+        # self.create_subscription(MarkerArray, "/body_tracking_data", self.markers_cb, 1)
+        # self.markers_pub = self.create_publisher(MarkerArrayStamped, "/body_tracking_data_stamped", 1)
 
         qos = rclpy.qos.QoSProfile(
-            depth=10,
+            depth=1,
             # durability=rclpy.qos.QoSDurabilityPolicy.VOLATILE,
             # reliability=rclpy.qos.QoSReliabilityPolicy.BEST_EFFORT,
         )
         self.rgb_sub = Subscriber(self, Image, "/rgb/image_raw", qos_profile=qos)
-        self.skeletons_sub = Subscriber(self, MarkerArrayStamped, "/body_tracking_data_stamped", qos_profile=qos)
+        self.skeletons_sub = Subscriber(self, MarkerArrayStamped, "/body_tracking_data", qos_profile=qos)
         self.synchronizer = ApproximateTimeSynchronizer([self.rgb_sub, self.skeletons_sub],
-                                                        queue_size=10, slop=0.1)
+                                                        queue_size=1, slop=0.1)
 
         self.image_pub = self.create_publisher(Image, "/rgb/image_skeleton", 1)
 
@@ -34,12 +34,12 @@ class SkeletonToRGB(rclpy.node.Node):
         self.calibration = Calibration(2)
         self.get_logger().info("ready")
 
-    def markers_cb(self, m_msg):
-        if len(m_msg.markers)>0:
-            msg = MarkerArrayStamped()
-            msg.header = m_msg.markers[0].header
-            msg.markers = m_msg.markers
-            self.markers_pub.publish(msg)
+    # def markers_cb(self, m_msg):
+    #     if len(m_msg.markers)>0:
+    #         msg = MarkerArrayStamped()
+    #         msg.header = m_msg.markers[0].header
+    #         msg.markers = m_msg.markers
+    #         self.markers_pub.publish(msg)
         
     def topic_sync_cb(self, rgb_msg, skeleton_msg):
         if len(skeleton_msg.markers) != 0:

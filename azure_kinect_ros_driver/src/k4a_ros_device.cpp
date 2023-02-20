@@ -32,6 +32,7 @@ using namespace std;
 
 #if defined(K4A_BODY_TRACKING)
 using namespace visualization_msgs::msg;
+using namespace azure_kinect_ros_msgs::msg;
 #endif
 
 K4AROSDevice::K4AROSDevice()
@@ -275,7 +276,7 @@ K4AROSDevice::K4AROSDevice()
 
 #if defined(K4A_BODY_TRACKING)
   if (params_.body_tracking_enabled) {
-    body_marker_publisher_ = this->create_publisher<MarkerArray>("body_tracking_data", 1);
+    body_marker_publisher_ = this->create_publisher<MarkerArrayStamped>("body_tracking_data", 1);
 
     body_index_map_publisher_ = image_transport::create_publisher(this,"body_index_map/image_raw");
   }
@@ -768,12 +769,7 @@ k4a_result_t K4AROSDevice::getBodyMarker(const k4abt_body_t& body, std::shared_p
   
   k4a_float3_t position = body.skeleton.joints[jointType].position;
   k4a_quaternion_t orientation = body.skeleton.joints[jointType].orientation;
-  // k4a_calibration_t * calibration = k4a::calibration(); 
-  k4a_float2_t img_position = calibration_data_.convert3Dto2D(position);
-  // calibration->convert_3d_to_2d(position, K4A_CALIBRATION_TYPE_DEPTH, K4A_CALIBRATION_TYPE_COLOR, img_position);
-  // if (jointType==1) {
-  //   k4a::calibration::convert_3d_to_2d();
-  // }
+
   marker_msg->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
   marker_msg->header.stamp = capture_time;
 
@@ -798,8 +794,8 @@ k4a_result_t K4AROSDevice::getBodyMarker(const k4abt_body_t& body, std::shared_p
   marker_msg->scale.y = 0.05;
   marker_msg->scale.z = 0.05;
 
-  marker_msg->pose.position.x = img_position.v[0];//position.v[0] / 1000.0f;
-  marker_msg->pose.position.y = img_position.v[1];//position.v[1] / 1000.0f;
+  marker_msg->pose.position.x = position.v[0] / 1000.0f;
+  marker_msg->pose.position.y = position.v[1] / 1000.0f;
   marker_msg->pose.position.z = position.v[2] / 1000.0f;
   marker_msg->pose.orientation.w = orientation.wxyz.w;
   marker_msg->pose.orientation.x = orientation.wxyz.x;
@@ -1216,7 +1212,7 @@ void K4AROSDevice::bodyPublisherThread()
         if (this->count_subscribers("body_tracking_data") > 0)
         {
           // Joint marker array
-          MarkerArray::SharedPtr markerArrayPtr(new MarkerArray);
+          MarkerArrayStamped::SharedPtr markerArrayPtr(new MarkerArrayStamped);
           auto num_bodies = body_frame.get_num_bodies();
           for (size_t i = 0; i < num_bodies; ++i)
           {
@@ -1226,6 +1222,7 @@ void K4AROSDevice::bodyPublisherThread()
               Marker::SharedPtr markerPtr(new Marker);
               getBodyMarker(body, markerPtr, j, capture_time);
               markerArrayPtr->markers.push_back(*markerPtr);
+              markerArrayPtr->header.stamp = capture_time;
             }
           }
           body_marker_publisher_->publish(*markerArrayPtr);
