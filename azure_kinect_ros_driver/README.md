@@ -57,3 +57,49 @@ email to ensure we received your original message. Further information, includin
 ## License
 
 [MIT License](LICENSE)
+
+
+
+## Commands for me
+
+### Visualize body tracking as frames in rviz
+> ros2 run azure_kinect_ros_driver marker_to_pose.py
+
+
+### Export audio data for audio detector
+Run mic node:
+> ros2 run azure_kinect_ros_driver microphone_node.py
+
+Save topic in bag file
+> ros2 bag record /mic_raw
+
+Then play the bag file while running
+> ros2 run azure_kinect_ros_driver play_audio.py
+
+then, publish True to record topic to store the file, after the bag has finished
+> ros2 topic pub /record std_msgs/msg/Empty "{}" --once
+
+### Calibrate audio detector
+Listen to audio file
+mark t0 when the sound is started for sure, and t1 when the timer is for sure going on, but almost finished
+
+```
+s0 = t0*48000 = starting sample
+s1 = t1 *48000 = ending sample
+import numpy as np
+data = np.load("recorded.pkl", allow_pickle=True)
+refdata = data[s0:s1, :]
+np.save("ref.npy", refdata)
+```
+
+
+### Collect Data
+```
+ros2 bag record /body_tracking_data_rec /audio_label_rec -b 100000000
+```
+while running the sensor with:
+```
+ros2 launch azure_kinect_ros_driver driver.launch.py body_tracking_enabled:=true fps:=5 depth_mode:="WFOV_2X2BINNED" microphone_enabled:=true recording_node:=true audio_feedback:=True telegram_feedback:=False skeleton_frame:='camera_body'
+```
+OR ?
+> ros2 launch azure_kinect_ros_driver driver.launch.py body_tracking_enabled:=true fps:=5 depth_mode:="WFOV_UNBINNED" microphone_enabled:=true recording_node:=true audio_feedback:=True telegram_feedback:=False

@@ -26,8 +26,8 @@ class Play(rclpy.node.Node):  # type: ignore
 
     def record(self, msg):
         if self.rec:
-            sf.write('/home/idsia/prova.wav', np.vstack(self.samples), 48000)
-        with open('/home/idsia/prova.pkl', 'wb') as f:
+            sf.write('/home/idsia/new_prova.wav', np.vstack(self.samples), 48000)
+        with open('/home/idsia/new_prova.pkl', 'wb') as f:
             pickle.dump(np.vstack(self.samples), f)
 
     def has_received_data(self, msg: AudioData) -> None:

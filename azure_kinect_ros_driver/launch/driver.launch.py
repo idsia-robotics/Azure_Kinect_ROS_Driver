@@ -90,11 +90,11 @@ def generate_launch_description():
         description="FPS to run both cameras at. Valid options are 5, 15, and 30"),
     DeclareLaunchArgument(
         'point_cloud',
-        default_value="true",
+        default_value="false",
         description="Generate a point cloud from depth data. Requires depth_enabled"),
     DeclareLaunchArgument(
         'rgb_point_cloud',
-        default_value="true",
+        default_value="false",
         description="Colorize the point cloud using the RBG camera. Requires color_enabled and depth_enabled"),
     DeclareLaunchArgument(
         'point_cloud_in_depth_frame',

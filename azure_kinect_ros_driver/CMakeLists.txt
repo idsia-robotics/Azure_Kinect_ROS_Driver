@@ -138,8 +138,10 @@ install(PROGRAMS
   ${PROJECT_NAME}/utils.py
   ${PROJECT_NAME}/ref.npy
   ${PROJECT_NAME}/ref2.npy
+  ${PROJECT_NAME}/ref3.npy
   ${PROJECT_NAME}/.token
   ${PROJECT_NAME}/data_recorder.py
+  ${PROJECT_NAME}/marker_to_pose.py
   ${PROJECT_NAME}/tf.py
   ${PROJECT_NAME}/repub_for_video.py
   DESTINATION lib/${PROJECT_NAME}

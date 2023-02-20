@@ -2,7 +2,7 @@
 
 from azure_kinect_ros_msgs.msg import AudioData
 import rclpy.node
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, Float32
 from utils import Detector
 from collections import deque
 import numpy as np
@@ -16,6 +16,7 @@ class AudioLabeler(rclpy.node.Node):
         self.detector = Detector(chunksize=self.chunksize)
         self.create_subscription(AudioData, 'mic_raw', self.has_received_data, 10)
         self.label_pub = self.create_publisher(Bool, 'audio_label', 10)
+        self.dist_pub = self.create_publisher(Float32, 'audio_label_dist', 10)
         self.create_timer(0.1, self.compute_label)
 
     def has_received_data(self, msg):
@@ -26,11 +27,13 @@ class AudioLabeler(rclpy.node.Node):
 
     def compute_label(self):
         label = False
+        dist = 99.
         if len(self.samples) == self.chunksize:
             chunk = np.vstack(self.samples.copy())
             self.samples.clear()
-            label = self.detector.consume_chunk(chunk)
+            label, dist = self.detector.consume_chunk(chunk)
         self.label_pub.publish(Bool(data=label))
+        self.dist_pub.publish(Float32(data=dist))
 
 def main(args=None):
     rclpy.init(args=args)
