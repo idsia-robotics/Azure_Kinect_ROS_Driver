@@ -85,6 +85,10 @@ def generate_launch_description():
         default_value="true",
         description="Enable or disable the 7 channel microphone"),
     DeclareLaunchArgument(
+        'skeleton_to_rgb_enabled',
+        default_value="true",
+        description="Enable or disable the rgb image with the skeleton overlay"),
+    DeclareLaunchArgument(
         'fps',
         default_value="5",
         description="FPS to run both cameras at. Valid options are 5, 15, and 30"),
@@ -130,11 +134,11 @@ def generate_launch_description():
         description="If True, publish the static transforms for camera, tripod and coffee machine"),
     DeclareLaunchArgument(
         'audio_feedback',
-        default_value="true",
+        default_value="True",
         description="If True, publish the static transforms for camera, tripod and coffee machine"),
     DeclareLaunchArgument(
         'telegram_feedback',
-        default_value="false",
+        default_value="False",
         description="If True, publish the static transforms for camera, tripod and coffee machine"),
     DeclareLaunchArgument(
         'body_tracking_enabled',
@@ -200,6 +204,12 @@ def generate_launch_description():
         name='microphone_node',
         parameters = [],
         condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("microphone_enabled"))),
+    launch_ros.actions.Node(
+        package='azure_kinect_ros_driver',
+        executable='skeleton_to_rgb.py',
+        name='skeleton_to_rgb_node',
+        parameters = [],
+        condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("skeleton_to_rgb_enabled"))),
     launch_ros.actions.Node(
         package='azure_kinect_ros_driver',
         executable='audio_labeler.py',

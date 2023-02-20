@@ -144,6 +144,7 @@ install(PROGRAMS
   ${PROJECT_NAME}/marker_to_pose.py
   ${PROJECT_NAME}/tf.py
   ${PROJECT_NAME}/repub_for_video.py
+  ${PROJECT_NAME}/skeleton_to_rgb.py
   DESTINATION lib/${PROJECT_NAME}
 )
 ament_package()

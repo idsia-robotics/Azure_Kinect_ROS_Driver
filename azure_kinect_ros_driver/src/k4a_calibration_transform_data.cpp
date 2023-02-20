@@ -93,6 +93,12 @@ int K4ACalibrationTransformData::getColorHeight()
   return k4a_calibration_.color_camera_calibration.resolution_height;
 }
 
+k4a_float2_t K4ACalibrationTransformData::convert3Dto2D(const k4a_float3_t& source_point3d) {
+  k4a_float2_t position_2d;
+  k4a_calibration_.convert_3d_to_2d(source_point3d, K4A_CALIBRATION_TYPE_DEPTH, K4A_CALIBRATION_TYPE_COLOR, &position_2d);
+  return position_2d;
+}
+
 void K4ACalibrationTransformData::print()
 {
   RCLCPP_INFO(this->get_logger(),"K4A Calibration Blob:");
