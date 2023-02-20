@@ -52,6 +52,8 @@ class SkeletonToRGB(rclpy.node.Node):
                         image = cv2.circle(image, point.astype(int), 3, color, 3)
             image = numpy_to_image(image, rgb_msg.encoding)
             self.image_pub.publish(image)
+        else:
+            self.image_pub.publish(rgb_msg)
 
 
 def main(args=None):

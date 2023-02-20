@@ -171,6 +171,35 @@ def get_body_segments():
             right_arm_coords, right_hand_coords, left_leg_coords, 
             right_leg_coords, head_coords, face_coords]
 
+
+def markers_to_features(markers, features):
+    """
+    features = [jointId_[rot, xy, dist]]
+    """
+    sample = []
+    for feat in features:
+        j_id, f = feat.split("_")
+        j_id = int(j_id)
+        if 'xy' in f:
+            sample.append(markers[j_id].pose.position.x)
+            sample.append(markers[j_id].pose.position.y)
+        elif 'rot' in f:
+            rot = get_marker_rotation(markers[j_id].pose.orientation)
+            sample.append(np.sin(rot))
+            sample.append(np.cos(rot))
+        elif 'dist' in f:
+            d = np.linalg.norm([markers[j_id].pose.position.x, markers[j_id].pose.position.y])
+            sample.append(d)
+    return np.array(sample)
+
+from scipy.spatial.transform import Rotation as R
+def get_marker_rotation(ori):
+    quat = [ori.x, ori.y, ori.z, ori.w]
+    rot = R.from_quat(quat).as_matrix()
+    yhat = rot @ np.array([0, 1, 0])
+    rot = np.arctan2(yhat[1], yhat[0])
+    return rot
+
 class Detector:
     def __init__(self, samplingrate=48000, chunksize=4800, smoothing_seconds=5, distance_threshold=5, history_seconds=60*5, cooldown_seconds=15):
         """Prepares detector. Reads reference audio from ref.npy.

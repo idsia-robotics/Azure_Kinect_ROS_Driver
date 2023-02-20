@@ -143,7 +143,8 @@ install(PROGRAMS
   ${PROJECT_NAME}/ref3.npy
   ${PROJECT_NAME}/.token
   ${PROJECT_NAME}/data_recorder.py
-  ${PROJECT_NAME}/marker_to_pose.py
+  ${PROJECT_NAME}/model_node.py
+  ${PROJECT_NAME}/rf_clf.pkl
   ${PROJECT_NAME}/tf.py
   ${PROJECT_NAME}/repub_for_video.py
   ${PROJECT_NAME}/skeleton_to_rgb.py
