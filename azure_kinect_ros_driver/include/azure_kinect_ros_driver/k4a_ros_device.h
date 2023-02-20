@@ -25,7 +25,6 @@
 #include <k4arecord/playback.hpp>
 
 #if defined(K4A_BODY_TRACKING)
-#include <visualization_msgs/msg/marker_array.hpp>
 #include <azure_kinect_ros_msgs/msg/marker_array_stamped.hpp>
 #include <k4abt.hpp>
 #endif
