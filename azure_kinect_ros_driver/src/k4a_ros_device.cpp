@@ -1222,9 +1222,9 @@ void K4AROSDevice::bodyPublisherThread()
               Marker::SharedPtr markerPtr(new Marker);
               getBodyMarker(body, markerPtr, j, capture_time);
               markerArrayPtr->markers.push_back(*markerPtr);
-              markerArrayPtr->header.stamp = capture_time;
             }
           }
+          markerArrayPtr->header.stamp = capture_time;
           body_marker_publisher_->publish(*markerArrayPtr);
         }
 
