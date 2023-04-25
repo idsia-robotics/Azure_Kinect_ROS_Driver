@@ -31,7 +31,6 @@ find_package(visualization_msgs REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/AudioData.msg"
   "msg/MarkerArrayStamped.msg"
-  "msg/ModelOutput.msg"
   DEPENDENCIES std_msgs
   DEPENDENCIES visualization_msgs
  )

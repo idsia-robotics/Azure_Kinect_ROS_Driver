@@ -204,37 +204,6 @@ def generate_launch_description():
         name='microphone_node',
         parameters = [],
         condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("microphone_enabled"))),
-    launch_ros.actions.Node(
-        package='azure_kinect_ros_driver',
-        executable='skeleton_to_rgb.py',
-        name='skeleton_to_rgb_node',
-        parameters = [],
-        condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("skeleton_to_rgb_enabled"))),
-    launch_ros.actions.Node(
-        package='azure_kinect_ros_driver',
-        executable='audio_labeler.py',
-        name='audio_labeler_node',
-        parameters = []),
-    launch_ros.actions.Node(
-        package='azure_kinect_ros_driver',
-        executable='coffee_feedback.py',
-        name='coffee_feedback_node',
-        parameters = [
-            {'audio_feedback': launch.substitutions.LaunchConfiguration('audio_feedback')},
-            {'telegram_feedback': launch.substitutions.LaunchConfiguration('telegram_feedback')}],
-        condition=conditions.IfCondition(use_feedback_node)
-        # condition=conditions.IfCondition(
-        #     launch.substitutions.PythonExpression(
-        #         [launch.substitutions.LaunchConfiguration('audio_feedback'), "' or '", launch.substitutions.LaunchConfiguration('telegram_feedback')]
-        #     )
-        # )
-    ),
-    launch_ros.actions.Node(
-        package='azure_kinect_ros_driver',
-        executable='data_recorder.py',
-        name='data_recorder',
-        parameters=[{'skeleton_frame': launch.substitutions.LaunchConfiguration('skeleton_frame')}],
-        condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("recording_node"))),
     # If flag overwrite_robot_description is set:
     launch_ros.actions.Node(
         package='robot_state_publisher',
@@ -263,16 +232,4 @@ def generate_launch_description():
         arguments=[urdf_path],
         remappings=remappings,
         condition=conditions.UnlessCondition(launch.substitutions.LaunchConfiguration("overwrite_robot_description"))),
-    launch_ros.actions.Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        output='screen',
-        arguments=['0','0', '1.95', '1.0471975', '0.523598', '0', 'camera_tripod', 'camera_base'],
-        condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("publish_static_coffee"))),
-    launch_ros.actions.Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        output='screen',
-        arguments=['0.55','0.30', '1.22', '0', '0', '0', 'camera_tripod', 'coffee_machine'],
-        condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("publish_static_coffee"))),
     ])
