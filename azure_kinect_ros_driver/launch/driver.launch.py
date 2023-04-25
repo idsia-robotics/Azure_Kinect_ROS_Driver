@@ -85,10 +85,6 @@ def generate_launch_description():
         default_value="true",
         description="Enable or disable the 7 channel microphone"),
     DeclareLaunchArgument(
-        'skeleton_to_rgb_enabled',
-        default_value="true",
-        description="Enable or disable the rgb image with the skeleton overlay"),
-    DeclareLaunchArgument(
         'fps',
         default_value="5",
         description="FPS to run both cameras at. Valid options are 5, 15, and 30"),
@@ -120,26 +116,6 @@ def generate_launch_description():
         'recording_loop_enabled',
         default_value="false",
         description="If set to true the recording file will rewind the beginning once end of file is reached"),
-    DeclareLaunchArgument(
-        'recording_node',
-        default_value="false",
-        description="If set to true the data recorder will be enabled to publish data for our rosbags"),
-    DeclareLaunchArgument(
-        'skeleton_frame',
-        default_value="depth_camera_link",
-        description="Used by recorder for bags. Specify the frame to be used for the recorded body tracking joints"),
-    DeclareLaunchArgument(
-        'publish_static_coffee',
-        default_value="false",
-        description="If True, publish the static transforms for camera, tripod and coffee machine"),
-    DeclareLaunchArgument(
-        'audio_feedback',
-        default_value="True",
-        description="If True, publish the static transforms for camera, tripod and coffee machine"),
-    DeclareLaunchArgument(
-        'telegram_feedback',
-        default_value="False",
-        description="If True, publish the static transforms for camera, tripod and coffee machine"),
     DeclareLaunchArgument(
         'body_tracking_enabled',
         default_value="false",
