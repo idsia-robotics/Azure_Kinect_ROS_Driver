@@ -82,7 +82,7 @@ def generate_launch_description():
         description="Resolution at which to run the color camera. Valid options: 720P, 1080P, 1440P, 1536P, 2160P, 3072P"),
     DeclareLaunchArgument(
         'microphone_enabled',
-        default_value="true",
+        default_value="false",
         description="Enable or disable the 7 channel microphone"),
     DeclareLaunchArgument(
         'fps',

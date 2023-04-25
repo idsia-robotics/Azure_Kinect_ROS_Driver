@@ -19,16 +19,7 @@ class Play(rclpy.node.Node):  # type: ignore
         self.stream = OutputStream(48000, channels=7, 
             dtype='int32'
             )
-        self.create_subscription(std_msgs.msg.Empty, 'record', self.record, 0)
         self.stream.start()
-        self.samples = []
-        self.rec = True
-
-    def record(self, msg):
-        if self.rec:
-            sf.write('/home/idsia/new_prova.wav', np.vstack(self.samples), 48000)
-        with open('/home/idsia/new_prova.pkl', 'wb') as f:
-            pickle.dump(np.vstack(self.samples), f)
 
     def has_received_data(self, msg: AudioData) -> None:
         sample = []
@@ -36,7 +27,6 @@ class Play(rclpy.node.Node):  # type: ignore
             sample.append(getattr(msg, f"channel_{channel}"))
         sample = np.ascontiguousarray(np.array(sample).T)
         self.stream.write(sample)
-        self.samples.append(sample)
 
     def __del__(self) -> None:
         self.stream.stop()

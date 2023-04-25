@@ -119,38 +119,35 @@ def numpy_to_image(arr, encoding):
 
     return im
 
+# https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/examples/opencv_compatibility/main.cpp
 class Calibration:
-    def __init__(self, ak_id=2):
-        if ak_id==2:
-            cx = 640.689
-            cy = 365.123
-            fx = 606.747
-            fy = 606.525
-            # cx = 1025.4019775390625
-            # cy = 776.4967041015625
-            # fx = 970.79443359375
-            # fy = 970.439697265625
-            k1 = 0.3538583815097809
-            k2 = -2.7078771591186523
-            k3 = 1.6020128726959229
-            k4 = 0.2254483550786972
-            k5 = -2.500659704208374
-            k6 = 1.5115599632263184
-            codx = 0.0
-            cody = 0.0
-            p2 = 0.00015523977344855666
-            p1 = 1.5893810996203683e-05
+    def __init__(self, camera_info):
+        cx = camera_info.k[2]
+        cy = camera_info.k[5]
+        fx = camera_info.k[0]
+        fy = camera_info.k[4]
 
-            self.tr = np.array([-32.0171, -1.98525, 3.88294])
-            rot = np.array([[0.999968, 0.00799054, -0.000969132],
-                    [-0.00785875, 0.995247, 0.0970607],
-                    [0.00174009, -0.0970499, 0.995278]
-                    ])
-            self.rot, _ = Rodrigues(rot)
-            self.camera_matrix = np.array([[fx, 0., cx],
-                            [0., fy, cy],
-                            [0., 0., 1.]])
-            self.dist_coeffs = np.array([k1, k2, p1, p2, k3, k4, k5, k6])
+        k1 = camera_info.d[0]
+        k2 = camera_info.d[1]
+        k3 = camera_info.d[4]
+        k4 = camera_info.d[5]
+        k5 = camera_info.d[6]
+        k6 = camera_info.d[7]
+        codx = 0.0
+        cody = 0.0
+        p2 = camera_info.d[3]
+        p1 = camera_info.d[2]
+
+        self.tr = np.array([-32.0171, -1.98525, 3.88294])
+        rot = np.array([[0.999968, 0.00799054, -0.000969132],
+                [-0.00785875, 0.995247, 0.0970607],
+                [0.00174009, -0.0970499, 0.995278]
+                ])
+        self.rot, _ = Rodrigues(rot)
+        self.camera_matrix = np.array([[fx, 0., cx],
+                        [0., fy, cy],
+                        [0., 0., 1.]])
+        self.dist_coeffs = np.array([k1, k2, p1, p2, k3, k4, k5, k6])
 
     def depth_to_rgb_image(self, points_3d):
         points_2d, _ = projectPoints(points_3d,
@@ -174,27 +171,6 @@ def get_body_segments():
     return [spine_coords, left_arm_coords, left_hand_coords, 
             right_arm_coords, right_hand_coords, left_leg_coords, 
             right_leg_coords, head_coords, face_coords]
-
-
-def markers_to_features(markers, features):
-    """
-    features = [jointId_[rot, xy, dist]]
-    """
-    sample = []
-    for feat in features:
-        j_id, f = feat.split("_")
-        j_id = int(j_id)
-        if 'xy' in f:
-            sample.append(markers[j_id].pose.position.x)
-            sample.append(markers[j_id].pose.position.y)
-        elif 'rot' in f:
-            rot = get_marker_rotation(markers[j_id].pose.orientation)
-            sample.append(np.sin(rot))
-            sample.append(np.cos(rot))
-        elif 'dist' in f:
-            d = np.linalg.norm([markers[j_id].pose.position.x, markers[j_id].pose.position.y])
-            sample.append(d)
-    return np.array(sample)
 
 from scipy.spatial.transform import Rotation as R
 def get_marker_rotation(ori):
