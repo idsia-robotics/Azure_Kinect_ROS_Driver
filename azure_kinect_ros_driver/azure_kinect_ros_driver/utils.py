@@ -204,6 +204,28 @@ def get_marker_rotation(ori):
     rot = np.arctan2(yhat[1], yhat[0])
     return rot
 
+def angle_difference(angle1, angle2):
+    return np.arctan2(np.sin(angle1-angle2), np.cos(angle1-angle2))
+
+class PID:
+
+    def __init__(self, Kp, Ki, Kd):
+        self.Kp = Kp
+        self.Ki = Ki
+        self.Kd = Kd
+
+        self.last_e = None
+        self.sum_e = 0
+
+    def step(self, e, dt):
+        if(self.last_e is not None):
+            derivative = (e-self.last_e)/dt
+        else:
+            derivative=0
+        self.last_e = e
+        self.sum_e += e*dt
+        return self.Kp*e + self.Kd*derivative + self.Ki*self.sum_e
+
 class Detector:
     def __init__(self, samplingrate=48000, chunksize=4800, smoothing_seconds=5, distance_threshold=5, history_seconds=60*5, cooldown_seconds=15):
         """Prepares detector. Reads reference audio from ref.npy.

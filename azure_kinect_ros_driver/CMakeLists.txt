@@ -144,10 +144,14 @@ install(PROGRAMS
   ${PROJECT_NAME}/.token
   ${PROJECT_NAME}/data_recorder.py
   ${PROJECT_NAME}/model_node.py
+  ${PROJECT_NAME}/pt_model.py
   ${PROJECT_NAME}/rf_clf.pkl
+  ${PROJECT_NAME}/lstm.pkl
+  ${PROJECT_NAME}/lstm.pth
   ${PROJECT_NAME}/tf.py
   ${PROJECT_NAME}/repub_for_video.py
   ${PROJECT_NAME}/skeleton_to_rgb.py
+  ${PROJECT_NAME}/rm_demo.py
   DESTINATION lib/${PROJECT_NAME}
 )
 ament_package()

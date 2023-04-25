@@ -58,3 +58,5 @@ Mkfile.old
 dkms.conf
 
 azure_kinect_ros_driver/azure_kinect_ros_driver/.token
+
+azure_kinect_ros_driver/azure_kinect_ros_driver/rf_clf.pkl

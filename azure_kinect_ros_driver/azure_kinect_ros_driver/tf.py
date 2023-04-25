@@ -91,7 +91,7 @@ class TF:
             return transform_from_msg(transform_msg.transform)
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException,
                 tf2_ros.ExtrapolationException) as e:
-            # self.node.get_logger().warn(f"{e}")
+            self.node.get_logger().warn(f"{e}")
             return None
 
     def point(self, msg: geometry_msgs.msg.PointStamped, frame: str) -> Optional[PyKDL.Vector]:

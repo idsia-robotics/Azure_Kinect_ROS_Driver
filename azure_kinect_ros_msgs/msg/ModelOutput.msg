@@ -1,7 +1,7 @@
 std_msgs/Header header
 
 # id for the inputs
-uint8[] ids
+int32[] ids
 
 # probabilities of interaction
 float32[] probas
