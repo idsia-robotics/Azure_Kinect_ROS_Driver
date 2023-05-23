@@ -6,8 +6,9 @@ import xacro
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription, conditions
-from launch.actions import (DeclareLaunchArgument, GroupAction)
+from launch.actions import (DeclareLaunchArgument, GroupAction, IncludeLaunchDescription)
 from launch.substitutions import LaunchConfiguration, Command
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 import launch.actions
 import launch_ros.actions
@@ -148,6 +149,10 @@ def generate_launch_description():
         'subordinate_delay_off_master_usec',
         default_value="0",
         description="Delay subordinate camera off master camera by specified amount in usec."),
+    DeclareLaunchArgument(
+        'rectify_images',
+        default_value="false",
+        description="Launch rectification nodelets for rgb and depth images."),
     launch_ros.actions.Node(
         package='azure_kinect_ros_driver',
         executable='node',
@@ -208,4 +213,11 @@ def generate_launch_description():
         arguments=[urdf_path],
         remappings=remappings,
         condition=conditions.UnlessCondition(launch.substitutions.LaunchConfiguration("overwrite_robot_description"))),
+    IncludeLaunchDescription(
+            PythonLaunchDescriptionSource([os.path.join(
+                get_package_share_directory('azure_kinect_ros_driver'),
+                'launch',
+                'rectify_kinect_images.launch.py')]),
+            condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("rectify_images"))
+            ),
     ])
