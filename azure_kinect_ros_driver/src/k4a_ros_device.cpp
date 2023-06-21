@@ -1234,6 +1234,7 @@ void K4AROSDevice::bodyPublisherThread()
           body_markers_array_publisher_->publish(*markerArrayPtr);
 
           markerArrayStampedPtr->header.stamp = capture_time;
+          markerArrayStampedPtr->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
           markerArrayStampedPtr->markers = markerArrayPtr->markers;
 
           body_markers_array_stamped_publisher_->publish(*markerArrayStampedPtr);
