@@ -133,25 +133,14 @@ install(
 )
 ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
-  ${PROJECT_NAME}/microphone_node.py
-  ${PROJECT_NAME}/play_audio.py
-  ${PROJECT_NAME}/audio_labeler.py
-  ${PROJECT_NAME}/coffee_feedback.py
   ${PROJECT_NAME}/utils.py
-  ${PROJECT_NAME}/ref.npy
-  ${PROJECT_NAME}/ref2.npy
-  ${PROJECT_NAME}/ref3.npy
-  ${PROJECT_NAME}/.token
-  ${PROJECT_NAME}/data_recorder.py
   ${PROJECT_NAME}/model_node.py
+  ${PROJECT_NAME}/features_debug_node.py
   ${PROJECT_NAME}/pt_model.py
-  ${PROJECT_NAME}/rf_clf.pkl
   ${PROJECT_NAME}/lstm.pkl
   ${PROJECT_NAME}/lstm.pth
   ${PROJECT_NAME}/tf.py
-  ${PROJECT_NAME}/repub_for_video.py
   ${PROJECT_NAME}/skeleton_to_rgb.py
-  ${PROJECT_NAME}/rm_demo.py
   DESTINATION lib/${PROJECT_NAME}
 )
 ament_package()
