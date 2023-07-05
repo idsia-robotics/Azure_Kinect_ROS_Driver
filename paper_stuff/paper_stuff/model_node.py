@@ -9,7 +9,7 @@ import PyKDL
 from .utils import markers_to_features
 import torch
 from .pt_model import LSTM
-
+from ament_index_python.packages import get_package_share_directory
 
 class ModelNode(rclpy.node.Node):
 
@@ -22,6 +22,8 @@ class ModelNode(rclpy.node.Node):
         self.create_subscription(MarkerArrayStamped, "body_tracking_data", self.has_received_markers, 10)
         self.tf_utils = TF(self)
         self.tform = None
+        self.pkg_path = get_package_share_directory("paper_stuff")
+        self.get_logger().info(self.pkg_path)
         
     def transform_skeletons(self, msg: MarkerArrayStamped) -> MarkerArrayStamped:
         for i in range(len(msg.markers)):
@@ -54,8 +56,7 @@ class RandomForestNode(ModelNode):
     def __init__(self):
         super().__init__()
         self.features = ["26_rot",  "1_rot", "1_xy"]
-        file_path = os.path.dirname(os.path.realpath(__file__)) 
-        with open(os.path.join(file_path, f"models/rf_clf.pkl"), 'rb') as f:
+        with open(self.pkg_path + "/models/rf_clf.pkl", 'rb') as f:
             self.model = pickle.load(f)
 
     def predict(self, msg: MarkerArrayStamped, out_msg: ModelOutput) -> ModelOutput:
@@ -72,8 +73,8 @@ class LSTMNode(ModelNode):
     def __init__(self):
         super().__init__()
         self.features = ["26_rot",  "1_rot", "1_xy"]#, '1_dist']
-        file_path = os.path.dirname(os.path.realpath(__file__))
-        with open(os.path.join(file_path, "models/lstm.info")) as f:
+        file_path = self.pkg_path + "/models/lstm.info"
+        with open(file_path) as f:
             info = eval(f.read())
         # with open(os.path.join(file_path, "lstm.pkl"), 'rb') as f:
         #     info = pickle.load(f)
@@ -81,7 +82,7 @@ class LSTMNode(ModelNode):
         self.model = LSTM(input_size=info['input_size'], hidden_size=info['hidden_size'], out_size=1,
                         num_layers=info['num_layers']).to(self.device)
         
-        self.model.load_state_dict(torch.load(os.path.join(file_path, "models/lstm.pth"), map_location=torch.device('cpu')))
+        self.model.load_state_dict(torch.load(self.pkg_path + "/models/lstm.pth", map_location=torch.device('cpu')))
         self.model.eval()
         self.hiddens = {}
         self.create_timer(1., self.check_hiddens)

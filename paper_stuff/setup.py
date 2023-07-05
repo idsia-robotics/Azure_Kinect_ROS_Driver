@@ -11,6 +11,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name + "/launch", glob.glob("launch/*")),
+        ('share/' + package_name + "/models", glob.glob("models/*")),
         ('share/' + package_name, ['package.xml']),
     ],
     install_requires=['setuptools'],

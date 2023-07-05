@@ -59,4 +59,4 @@ dkms.conf
 
 azure_kinect_ros_driver/azure_kinect_ros_driver/.token
 
-paper_stuff/paper_stuff/models/rf_clf.pkl
+paper_stuff/models/rf_clf.pkl
