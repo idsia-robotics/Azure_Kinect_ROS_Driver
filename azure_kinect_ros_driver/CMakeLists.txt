@@ -26,7 +26,6 @@ find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
-find_package(azure_kinect_ros_msgs REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -53,7 +52,6 @@ ament_target_dependencies(${PROJECT_NAME}_node rclcpp
   std_msgs 
   sensor_msgs
   visualization_msgs
-  azure_kinect_ros_msgs
   image_transport
   tf2
   tf2_ros
@@ -131,16 +129,17 @@ install(
   urdf
   DESTINATION share/${PROJECT_NAME}/
 )
-ament_python_install_package(${PROJECT_NAME})
-install(PROGRAMS
-  ${PROJECT_NAME}/utils.py
-  ${PROJECT_NAME}/model_node.py
-  ${PROJECT_NAME}/features_debug_node.py
-  ${PROJECT_NAME}/pt_model.py
-  ${PROJECT_NAME}/lstm.pkl
-  ${PROJECT_NAME}/lstm.pth
-  ${PROJECT_NAME}/tf.py
-  ${PROJECT_NAME}/skeleton_to_rgb.py
-  DESTINATION lib/${PROJECT_NAME}
-)
+#ament_python_install_package(${PROJECT_NAME})
+#install(PROGRAMS
+#  ${PROJECT_NAME}/utils.py
+#  ${PROJECT_NAME}/model_node.py
+#  ${PROJECT_NAME}/features_debug_node.py
+#  ${PROJECT_NAME}/pt_model.py
+#  ${PROJECT_NAME}/lstm.info
+#  ${PROJECT_NAME}/lstm.pth
+#  ${PROJECT_NAME}/rf_clf.pkl
+#  ${PROJECT_NAME}/tf.py
+#  ${PROJECT_NAME}/skeleton_to_rgb.py
+#  DESTINATION lib/${PROJECT_NAME}
+#)
 ament_package()

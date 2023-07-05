@@ -110,10 +110,6 @@ def generate_launch_description():
         default_value="false",
         description="If set to true the recording file will rewind the beginning once end of file is reached"),
     DeclareLaunchArgument(
-        'skeleton_frame',
-        default_value="depth_camera_link",
-        description="Used by recorder for bags. Specify the frame to be used for the recorded body tracking joints"),
-    DeclareLaunchArgument(
         'body_tracking_enabled',
         default_value="false",
         description="If set to true the joint positions will be published as marker arrays"),
