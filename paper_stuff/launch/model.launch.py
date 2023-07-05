@@ -10,8 +10,8 @@ def generate_launch_description():
 	return LaunchDescription([
 	DeclareLaunchArgument(
         'skeleton_frame',
-        default_value="depth_camera_link",
-        description="Used by recorder for bags. Specify the frame to be used for the recorded body tracking joints"),
+        default_value="camera_base",
+        description="Specify the frame to be used for the model input"),
 	DeclareLaunchArgument(
         'prediction_threshold',
         default_value="0.3",
@@ -22,7 +22,7 @@ def generate_launch_description():
         description="Enable or disable the rgb image with the skeleton overlay"),
     DeclareLaunchArgument(
         'plot_model_output',
-        default_value="false",
+        default_value="true",
         description="If True, it does not plot the skeletons, but a bounding box with model output"),
     DeclareLaunchArgument(
         'lstm',

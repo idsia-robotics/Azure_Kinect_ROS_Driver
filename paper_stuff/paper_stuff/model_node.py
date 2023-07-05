@@ -23,7 +23,6 @@ class ModelNode(rclpy.node.Node):
         self.tf_utils = TF(self)
         self.tform = None
         self.pkg_path = get_package_share_directory("paper_stuff")
-        self.get_logger().info(self.pkg_path)
         
     def transform_skeletons(self, msg: MarkerArrayStamped) -> MarkerArrayStamped:
         for i in range(len(msg.markers)):
