@@ -6,7 +6,7 @@ import numpy as np
 import pickle
 import os
 import PyKDL
-from .utils import markers_to_features
+from .utils import markers_to_features, transform_skeletons
 import torch
 from .pt_model import LSTM
 from ament_index_python.packages import get_package_share_directory
@@ -23,17 +23,6 @@ class ModelNode(rclpy.node.Node):
         self.tf_utils = TF(self)
         self.tform = None
         self.pkg_path = get_package_share_directory("paper_stuff")
-        
-    def transform_skeletons(self, msg: MarkerArrayStamped) -> MarkerArrayStamped:
-        for i in range(len(msg.markers)):
-            pose = msg.markers[i].pose
-            pos = PyKDL.Vector(pose.position.x, pose.position.y, pose.position.z)
-            rot = PyKDL.Rotation.Quaternion(
-                pose.orientation.x, pose.orientation.y,
-                pose.orientation.z, pose.orientation.w)
-            msg.markers[i].pose = pose_msg(self.tform * PyKDL.Frame(rot, pos)).pose
-            msg.markers[i].header.frame_id = self.skeleton_frame
-        return msg
 
     def has_received_markers(self, msg: MarkerArrayStamped) -> None:
         out_msg = ModelOutput()
@@ -43,7 +32,7 @@ class ModelNode(rclpy.node.Node):
             if self.tform is None:
                 self.tform = self.tf_utils.get_transform(msg.markers[0].header.frame_id, self.skeleton_frame)
             if self.tform is not None:
-                msg = self.transform_skeletons(msg)
+                msg = transform_skeletons(msg, self.skeleton_frame, self.tform)
                 out_msg = self.predict(msg, out_msg)
 
         self.out_pub.publish(out_msg)

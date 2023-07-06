@@ -1,5 +1,8 @@
 import numpy as np
 from cv2 import Rodrigues, projectPoints
+import PyKDL
+from azure_kinect_ros_msgs.msg import MarkerArrayStamped
+from .tf import pose_msg
 
 # https://github.com/microsoft/Azure-Kinect-Sensor-SDK/blob/develop/examples/opencv_compatibility/main.cpp
 class Calibration:
@@ -39,6 +42,19 @@ class Calibration:
                                     self.dist_coeffs
                                     )
         return points_2d
+
+def transform_skeletons(msg: MarkerArrayStamped, target_frame: str, transform: PyKDL.Frame) -> MarkerArrayStamped:
+        msg.header.frame_id = target_frame
+        for i in range(len(msg.markers)):
+            pose = msg.markers[i].pose
+            pos = PyKDL.Vector(pose.position.x, pose.position.y, pose.position.z)
+            rot = PyKDL.Rotation.Quaternion(
+                pose.orientation.x, pose.orientation.y,
+                pose.orientation.z, pose.orientation.w)
+            msg.markers[i].pose = pose_msg(transform * PyKDL.Frame(rot, pos)).pose
+            msg.markers[i].header.frame_id = target_frame
+        return msg
+
 
 def get_body_segments():
     spine_coords = [0, 1, 2, 3]

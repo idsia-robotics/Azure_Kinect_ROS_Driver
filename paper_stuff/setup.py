@@ -26,7 +26,8 @@ setup(
             'lstm_node = paper_stuff.lstm_node:main',
             'rf_node = paper_stuff.rf_node:main',
             'features_debug_node = paper_stuff.features_debug_node:main',
-            'skeleton_to_rgb = paper_stuff.skeleton_to_rgb:main'
+            'skeleton_to_rgb = paper_stuff.skeleton_to_rgb:main',
+            'data_collector_node = paper_stuff.data_collector_node:main'
         ],
     },
 )

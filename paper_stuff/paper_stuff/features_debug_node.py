@@ -6,7 +6,7 @@ import numpy as np
 import pickle
 import os
 import PyKDL
-from .utils import markers_to_features
+from .utils import markers_to_features, transform_skeletons
 from scipy.spatial.transform import Rotation as R
 
 class FeaturesDebugNode(rclpy.node.Node):
@@ -20,25 +20,13 @@ class FeaturesDebugNode(rclpy.node.Node):
         self.create_subscription(MarkerArrayStamped, "body_tracking_data", self.has_received_markers, 10)
         self.tf_utils = TF(self)
         self.tform = None
-        
-    def transform_skeletons(self, msg: MarkerArrayStamped) -> MarkerArrayStamped:
-        msg.header.frame_id = self.skeleton_frame
-        for i in range(len(msg.markers)):
-            pose = msg.markers[i].pose
-            pos = PyKDL.Vector(pose.position.x, pose.position.y, pose.position.z)
-            rot = PyKDL.Rotation.Quaternion(
-                pose.orientation.x, pose.orientation.y,
-                pose.orientation.z, pose.orientation.w)
-            msg.markers[i].pose = pose_msg(self.tform * PyKDL.Frame(rot, pos)).pose
-            msg.markers[i].header.frame_id = self.skeleton_frame
-        return msg
 
     def has_received_markers(self, msg: MarkerArrayStamped) -> None:
         if len(msg.markers)>0:
             if self.tform is None:
                 self.tform = self.tf_utils.get_transform(msg.markers[0].header.frame_id, self.skeleton_frame)
             if self.tform is not None:
-                msg = self.transform_skeletons(msg)
+                msg = transform_skeletons(msg, self.skeleton_frame, self.tform)
                 for body_s in range(0, len(msg.markers), 32):
                     body_id = msg.markers[body_s].id //100
 
