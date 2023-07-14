@@ -97,7 +97,7 @@ class RoboMasterDemo(rclpy.node.Node):
             cmd.angular.z = self.PID.step(angle_difference(target_yaw, self.current_yaw), self.dt)
             arm_msg.x = 0.2
         elif self.current_yaw is not None:
-            cmd.angular.z = self.PID.step(angle_difference(self.yaw_zero, self.current_yaw), self.dt)
+            cmd.angular.z = self.PID.step(-self.current_yaw, self.dt)
         
         self.vel_pub.publish(cmd)
         self.led_pub.publish(led_msg)
