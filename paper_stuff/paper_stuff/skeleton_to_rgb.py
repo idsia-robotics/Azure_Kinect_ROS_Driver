@@ -1,4 +1,5 @@
 import rclpy.node
+from rclpy.duration import Duration
 from azure_kinect_ros_msgs.msg import MarkerArrayStamped, ModelOutput
 from sensor_msgs.msg import Image, CameraInfo
 from message_filters import ApproximateTimeSynchronizer, Subscriber
@@ -20,10 +21,16 @@ class SkeletonToRGB(rclpy.node.Node):
         )
 
         plot_model = self.declare_parameter("plot_model_output", False).value
+        self.hysteresis = self.declare_parameter("hysteresis", False).value
+        self.threshold = self.declare_parameter("prediction_threshold", 0.5).value
+        self.lower_threshold = self.declare_parameter("hysteresis_threshold", 0.2).value
+        self.user_alive_time = Duration(seconds=self.declare_parameter("user_alive_time", 1.).value)
+
 
         self.rgb_sub = Subscriber(self, Image, "/rgb/image_raw", qos_profile=qos)
         self.skeletons_sub = Subscriber(self, MarkerArrayStamped, "/body_tracking_data", qos_profile=qos)
         self.cv_bridge = cv_bridge.CvBridge()
+        
         if plot_model:
             self.model_sub = Subscriber(self, ModelOutput,"model_output", qos_profile=qos)
             self.synchronizer = ApproximateTimeSynchronizer([self.rgb_sub, self.skeletons_sub, self.model_sub],
@@ -36,8 +43,17 @@ class SkeletonToRGB(rclpy.node.Node):
         self.image_pub = self.create_publisher(Image, "/rgb/image_skeleton", 1)
         self.calibration = None
         self.calibration_subscriber = self.create_subscription(CameraInfo, "/depth_to_rgb/camera_info", self.calibration_cb, 1)
+
+        self.users = {}
+        self.create_timer(1., self.check_users)
+
         self.get_logger().info("ready")
     
+    def check_users(self):
+        for user_id in list(self.users.keys()):
+            if self.get_clock().now() - self.users[user_id]['timer'] >= self.user_alive_time:
+                del self.users[user_id]
+
     def calibration_cb(self, msg):
         self.get_logger().info(f"Got Calibration:\n{msg}")
         self.calibration = Calibration(msg)
@@ -57,17 +73,20 @@ class SkeletonToRGB(rclpy.node.Node):
                     # color = (np.array(cm.viridis(proba))[:-1]*255) #[0, 255*label, 255*(not label)]#[(body_id*10)%255]*3
                     # color = (int(color[2]), int(color[1]), int(color[0]))
                     if model_msg:
-                        proba = 0.
-                        for j, bid in enumerate(model_msg.ids):
-                            if bid == body_id:
-                                proba = model_msg.probas[j]
-                                label = model_msg.interactions[j]
-                                # color = (np.array(cm.viridis(proba))[:-1]*255) #[0, 255*label, 255*(not label)]#[(body_id*10)%255]*3
-                                color = [0, 255*label, 255*(not label)]#[(body_id*10)%255]*3
-                                rect = cv2.boundingRect(points_2d[body_s:body_s+32])
-                                image = cv2.rectangle(image, rect, color, 3)
-                                image = cv2.putText(image, f"{proba:.2f}", (rect[0]+rect[2]-80, rect[1]+40), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 3)
-                                break
+                        if body_id in model_msg.ids:
+                            idx = model_msg.ids.index(body_id)
+                            probas = model_msg.probas[idx]
+                            user = {"timer": self.get_clock().now(),
+                                    "probas": probas,
+                                    "triggered": probas>=self.threshold}
+                            if body_id in self.users and self.hysteresis:
+                                if self.users[body_id]["triggered"] and probas >= self.lower_threshold:
+                                    user["triggered"] = True
+                            self.users[body_id] = user
+                            color = [0, 255*user["triggered"], 255*(not user["triggered"])]#[(body_id*10)%255]*3
+                            rect = cv2.boundingRect(points_2d[body_s:body_s+32])
+                            image = cv2.rectangle(image, rect, color, 3)
+                            image = cv2.putText(image, f"{probas:.2f}", (rect[0]+rect[2]-80, rect[1]+40), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 3)
                     else:
                         for body_segment in get_body_segments():
                             for i in range(len(body_segment)-1):
