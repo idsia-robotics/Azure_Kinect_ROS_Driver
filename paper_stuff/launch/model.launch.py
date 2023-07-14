@@ -38,7 +38,8 @@ def generate_launch_description():
         package='paper_stuff',
         executable='lstm_node',
         name='lstm_node',
-        parameters = [{'skeleton_frame': launch.substitutions.LaunchConfiguration('skeleton_frame')}],
+        parameters = [{'skeleton_frame': launch.substitutions.LaunchConfiguration('skeleton_frame')},
+                      {'prediction_threshold': launch.substitutions.LaunchConfiguration('prediction_threshold')}],
         condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("lstm"))
         ),
     launch_ros.actions.Node(

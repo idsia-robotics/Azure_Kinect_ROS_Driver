@@ -61,10 +61,13 @@ class SkeletonToRGB(rclpy.node.Node):
                         for j, bid in enumerate(model_msg.ids):
                             if bid == body_id:
                                 proba = model_msg.probas[j]
+                                label = model_msg.interactions[j]
+                                # color = (np.array(cm.viridis(proba))[:-1]*255) #[0, 255*label, 255*(not label)]#[(body_id*10)%255]*3
+                                color = [0, 255*label, 255*(not label)]#[(body_id*10)%255]*3
+                                rect = cv2.boundingRect(points_2d[body_s:body_s+32])
+                                image = cv2.rectangle(image, rect, color, 3)
+                                image = cv2.putText(image, f"{proba:.2f}", (rect[0]+rect[2]-80, rect[1]+40), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 3)
                                 break
-                        rect = cv2.boundingRect(points_2d[body_s:body_s+32])
-                        image = cv2.rectangle(image, rect, color, 3)
-                        image = cv2.putText(image, f"{proba:.2f}", (rect[0]+rect[2]-80, rect[1]+40), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 3)
                     else:
                         for body_segment in get_body_segments():
                             for i in range(len(body_segment)-1):
