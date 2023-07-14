@@ -27,11 +27,13 @@ class RoboMasterDemo(rclpy.node.Node):
         self.threshold = self.declare_parameter("prediction_threshold", 0.5).value
         self.lower_threshold = self.declare_parameter("hysteresis_threshold", 0.2).value
         self.user_alive_time = Duration(seconds=self.declare_parameter("user_alive_time", 1.).value)
+        rm_name = self.declare_parameter("rm_name", "rm_demo").value
 
-        self.create_subscription(Odometry, '/odom', self.odom_cb, 10)
-        self.vel_pub = self.create_publisher(Twist, "/cmd_vel", 10)
-        self.led_pub = self.create_publisher(LEDEffect, "/leds/effect", 10)
-        self.arm_pub = self.create_publisher(Point, "/target_arm_position", 10)
+
+        self.create_subscription(Odometry, f"{rm_name}/odom", self.odom_cb, 10)
+        self.vel_pub = self.create_publisher(Twist, f"{rm_name}/cmd_vel", 10)
+        self.led_pub = self.create_publisher(LEDEffect, f"{rm_name}/leds/effect", 10)
+        self.arm_pub = self.create_publisher(Point, f"{rm_name}/target_arm_position", 10)
 
         self.PID = PID(2, 0.25, 0.1)
         self.current_yaw = None
