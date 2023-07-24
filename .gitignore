@@ -60,3 +60,13 @@ dkms.conf
 azure_kinect_ros_driver/azure_kinect_ros_driver/.token
 
 paper_stuff/models/rf_clf.pkl
+
+paper_stuff/notebooks/ds_for_rm_full.pkl
+
+paper_stuff/notebooks/ds_for_rm.pkl
+
+paper_stuff/notebooks/ds_viktor.pkl
+
+paper_stuff/notebooks/.ipynb_checkpoints/
+
+paper_stuff/paper_stuff/__pycache__/

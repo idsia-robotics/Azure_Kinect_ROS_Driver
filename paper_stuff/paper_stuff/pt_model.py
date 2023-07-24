@@ -34,3 +34,40 @@ class LSTM(nn.Module):
         x = self.dropout(lstm_out)
         y_pred = self.linear(x)
         return y_pred, hidden
+
+
+from torch.utils import data
+import numpy as np
+
+class SampleDataset(data.Dataset):
+    def __init__(self,
+                df,
+                feature_list,
+                ids):
+
+        self.features = feature_list
+        self.ids = ids
+        self.df = df
+        #self.X = [df.loc[idx, feature_list].values for idx in ids]
+        #self.y = [df.loc[idx, 'new_label'].values for idx in ids]
+        self.pos_weight = torch.tensor([5.])
+
+    def __getitem__(self, idx):
+        """Pytorch dataset standard get function to return a sample and its label given an index.
+
+        Args:
+            idx (int): sample index
+
+        Returns:
+            torch.tensor(float32): sample flatten array as pytorch tensor
+            torch.tensor(long): sample label as pytorch tensor
+        """
+        return torch.tensor(self.df.loc[self.ids[idx], self.features].values, dtype=torch.float32), torch.tensor(self.df.loc[self.ids[idx], 'new_label'].values, dtype=torch.long)
+
+    def __len__(self):
+        """Pytorch dataset standard len method 
+
+        Returns:
+            int: size of the dataset
+        """
+        return len(self.ids)
