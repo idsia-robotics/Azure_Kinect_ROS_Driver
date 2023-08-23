@@ -70,3 +70,9 @@ paper_stuff/notebooks/ds_viktor.pkl
 paper_stuff/notebooks/.ipynb_checkpoints/
 
 paper_stuff/paper_stuff/__pycache__/
+
+*.zip
+
+paper_stuff/notebooks/metrics_victor.pkl
+
+*.svg
