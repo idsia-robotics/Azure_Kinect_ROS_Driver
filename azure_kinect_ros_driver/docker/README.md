@@ -13,6 +13,7 @@ The driver won't work if a display is not available. So, a display must be set f
 This means that this operations must be run for every new terminal where you want to run the container.
 <details>
   <summary>UBUNTU</summary>
+  
 Simply run:
 ```
 xhost +local:docker
@@ -22,6 +23,7 @@ Then launch the container as explained below.
 
 <details>
   <summary>WINDOWS</summary>
+
 1. Start XLaunch
 2. Leave default settings and press `Next` (Multiple windows, Display number -1)
 3. Leave default settings and press `Next` (Start no client)
@@ -44,6 +46,7 @@ Remember to always follow the steps in [Display in Docker](#display-in-docker) f
 
 <details>
   <summary>UBUNTU</summary>
+
 To check that everything works, you can run `k4aviewer` from the container.
 Run:
 ```
@@ -79,6 +82,7 @@ docker run --privileged \
 
 <details>
   <summary>WINDOWS</summary>
+
 To check that everything works, you can run `k4aviewer` from the container.
 Run:
 ```
@@ -116,6 +120,7 @@ Remember to always follow the steps in [Display in Docker](#display-in-docker) f
 
 <details>
   <summary>UBUNTU</summary>
+
 To check that everything works, you can run `k4aviewer` from the container.
 Run:
 ```
@@ -154,6 +159,7 @@ docker run --privileged \
 
 <details>
   <summary>WINDOWS</summary>
+
 Run:
 ```
 docker run --privileged \
