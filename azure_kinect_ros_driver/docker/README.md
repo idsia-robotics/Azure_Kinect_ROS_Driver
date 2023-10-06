@@ -5,7 +5,7 @@ Otherwise, a regular docker installation is enough for using the driver on CPU (
 
 ### Windows
 To use body tracking on GPU, you need a docker installation supporting CUDAs, which we didn't test yet.
-For the CPU version, we tested with docker](https://docs.docker.com/desktop/windows/install/) using `Windows Subsystem for Linux (WSL2)` backend.
+For the CPU version, we tested with [docker](https://docs.docker.com/desktop/windows/install/) using `Windows Subsystem for Linux (WSL2)` backend.
 Also, you have to install [VcXsrv Windows X Server](https://sourceforge.net/projects/vcxsrv/). 
 
 ### Display in Docker
@@ -13,7 +13,7 @@ The driver won't work if a display is not available. So, a display must be set f
 This means that this operations must be run for every new terminal where you want to run the container.
 <details>
   <summary>UBUNTU</summary>
-  
+
 Simply run:
 ```
 xhost +local:docker
