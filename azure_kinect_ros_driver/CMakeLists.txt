@@ -20,9 +20,7 @@ endif()
 ## Find packages
 
 find_package(ament_cmake REQUIRED)
-find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
@@ -34,7 +32,6 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(angles REQUIRED)
-find_package(azure_kinect_ros_msgs REQUIRED)
 
 ###########
 ## Build ##
@@ -59,8 +56,7 @@ ament_target_dependencies(${PROJECT_NAME}_node rclcpp
   tf2_ros
   tf2_geometry_msgs
   cv_bridge
-  angles
-  azure_kinect_ros_msgs)
+  angles)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -131,13 +127,5 @@ install(
   urdf
   DESTINATION share/${PROJECT_NAME}/
 )
-ament_python_install_package(${PROJECT_NAME})
-install(PROGRAMS
-  ${PROJECT_NAME}/microphone_node.py
-  ${PROJECT_NAME}/play_audio.py
-  ${PROJECT_NAME}/utils.py
-  ${PROJECT_NAME}/tf.py
-  ${PROJECT_NAME}/skeleton_to_rgb.py
-  DESTINATION lib/${PROJECT_NAME}
-)
+
 ament_package()
