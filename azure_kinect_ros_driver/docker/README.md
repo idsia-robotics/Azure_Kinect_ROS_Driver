@@ -152,7 +152,7 @@ docker run --privileged \
 			--gpus all \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=unix$DISPLAY \
-			-it azure-kinect-ros:humble-GPU \
+			-it azure-kinect-ros:humble-gpu \
 			ros2 launch azure_kinect_ros_driver driver.launch.py body_tracking_enabled:=true body_tracking_cpu:=false rectify_images:=false
 ```
 </details>
