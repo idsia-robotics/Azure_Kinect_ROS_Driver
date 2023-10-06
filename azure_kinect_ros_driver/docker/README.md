@@ -38,7 +38,7 @@ This Dockerfile creates a container with CPU only support for the driver. The bo
 ### Build
 To build the container, step into the Dockerfiles folder and (I'm tagging the container just for convenience):
 ```
-docker build -f Dockerfile_CPU . -t your-name/azure-kinect-ros:humble-cpu
+docker build -f Dockerfile_CPU . -t azure-kinect-ros:humble-cpu
 ```
 
 ### Run the Container
@@ -53,7 +53,7 @@ Run:
 docker run --privileged \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=unix$DISPLAY \
-			-it your-name/azure-kinect-ros:humble-cpu \
+			-it azure-kinect-ros:humble-cpu \
 			k4aviewer
 ```
 The viewer should open. You will get an error because the microphone does not work. If you need, you can make it work following [this steps](https://github.com/mviereck/x11docker/wiki/Container-sound:-ALSA-or-Pulseaudio#pulseaudio-with-shared-socket) and then running:
@@ -66,7 +66,7 @@ docker run --privileged \
 		    --volume /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
 		    --volume /tmp/pulseaudio.client.conf:/etc/pulse/client.conf \
 		    --user $(id -u):$(id -g) \
-			-it your-name/azure-kinect-ros:humble-cpu \
+			-it azure-kinect-ros:humble-cpu \
 			k4aviewer
 ```
 If everything works (except the microphone), you can run the ROS driver. For all the available parameters, check the doc.
@@ -75,7 +75,7 @@ The following command will run the driver with body tracking enabled on CPU, so 
 docker run --privileged \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=unix$DISPLAY \
-			-it your-name/azure-kinect-ros:humble-cpu \
+			-it azure-kinect-ros:humble-cpu \
 			ros2 launch azure_kinect_ros_driver driver.launch.py body_tracking_enabled:=true body_tracking_cpu:=true rectify_images:=false
 ```
 </details>
@@ -90,7 +90,7 @@ docker run --privileged \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=host.docker.internal:0.0 \
 			-e QT_X11_NO_MITSHM=1 \
-			-it your-name/azure-kinect-ros:humble-cpu \
+			-it azure-kinect-ros:humble-cpu \
 			k4aviewer
 ```
 If everything works (except the microphone), you can run the ROS driver. For all the available parameters, check the doc.
@@ -100,7 +100,7 @@ docker run --privileged \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=host.docker.internal:0.0 \
 			-e QT_X11_NO_MITSHM=1 \
-			-it your-name/azure-kinect-ros:humble-cpu \
+			-it azure-kinect-ros:humble-cpu \
 			ros2 launch azure_kinect_ros_driver driver.launch.py body_tracking_enabled:=true body_tracking_cpu:=true rectify_images:=false
 ```
 </details>
@@ -111,7 +111,7 @@ This Dockerfile creates a container with GPU support for the driver.
 ### Build
 To build the container, step into the Dockerfiles folder and (I'm tagging the container just for convenience):
 ```
-docker build -f Dockerfile_GPU . -t your-name/azure-kinect-ros:humble-gpu
+docker build -f Dockerfile_GPU . -t azure-kinect-ros:humble-gpu
 ```
 
 ### Run the Container
@@ -128,7 +128,7 @@ docker run --privileged \
 			--gpus all \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=unix$DISPLAY \
-			-it your-name/azure-kinect-ros:humble-gpu \
+			-it azure-kinect-ros:humble-gpu \
 			k4aviewer
 ```
 The viewer should open. You will get an error because the microphone does not work. If you need, you can make it work following [this steps](https://github.com/mviereck/x11docker/wiki/Container-sound:-ALSA-or-Pulseaudio#pulseaudio-with-shared-socket) and then running:
@@ -142,7 +142,7 @@ docker run --privileged \
 		    --volume /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
 		    --volume /tmp/pulseaudio.client.conf:/etc/pulse/client.conf \
 		    --user $(id -u):$(id -g) \
-			-it your-name/azure-kinect-ros:humble-gpu \
+			-it azure-kinect-ros:humble-gpu \
 			k4aviewer
 ```
 If everything works (except the microphone), you can run the ROS driver. For all the available parameters, check the doc.
@@ -152,7 +152,7 @@ docker run --privileged \
 			--gpus all \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=unix$DISPLAY \
-			-it your-name/azure-kinect-ros:humble-GPU \
+			-it azure-kinect-ros:humble-GPU \
 			ros2 launch azure_kinect_ros_driver driver.launch.py body_tracking_enabled:=true body_tracking_cpu:=false rectify_images:=false
 ```
 </details>
@@ -167,7 +167,7 @@ docker run --privileged \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=host.docker.internal:0.0 \
 			-e QT_X11_NO_MITSHM=1 \
-			-it your-name/azure-kinect-ros:humble-gpu \
+			-it azure-kinect-ros:humble-gpu \
 			k4aviewer
 ```
 If everything works (except the microphone), you can run the ROS driver. For all the available parameters, check the doc.
@@ -178,7 +178,7 @@ docker run --privileged \
 			--volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
 			-e DISPLAY=host.docker.internal:0.0 \
 			-e QT_X11_NO_MITSHM=1 \
-			-it your-name/azure-kinect-ros:humble-gpu \
+			-it azure-kinect-ros:humble-gpu \
 			ros2 launch azure_kinect_ros_driver driver.launch.py body_tracking_enabled:=true body_tracking_cpu:=false rectify_images:=false
 ```
 </details>
