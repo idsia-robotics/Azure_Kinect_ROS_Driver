@@ -22,11 +22,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # setup entrypoint
-COPY ./ros_entrypoint.sh /
 RUN locale-gen en_US.UTF-8
 SHELL ["/bin/bash", "-c"]
-
-RUN source /ros_entrypoint.sh
 
 # kinect stuff for microphone
 RUN sed -i 's+archive.ubuntu.com/ubuntu/ jammy universe+archive.ubuntu.com/ubuntu/ focal universe+' /etc/apt/sources.list
@@ -82,6 +79,8 @@ RUN apt-get update \
 
 RUN mkdir -p /ros_ws/src
 RUN git -C /ros_ws/src/ clone -b driver https://github.com/idsia-robotics/Azure_Kinect_ROS_Driver.git
+
+COPY ./ros_entrypoint.sh /
 
 RUN source /ros_entrypoint.sh \
     && cd /ros_ws \
