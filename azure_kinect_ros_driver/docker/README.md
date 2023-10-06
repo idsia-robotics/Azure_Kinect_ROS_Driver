@@ -115,7 +115,7 @@ docker build -f Dockerfile_GPU . -t azure-kinect-ros:humble-gpu
 ```
 
 ### Run the Container
-The commands are the same as for the CPU container, but we are adding `--gpu all` parameter.
+The commands are the same as for the CPU container, but we are adding `--gpus all` parameter.
 Remember to always follow the steps in [Display in Docker](#display-in-docker) first.
 
 <details>
