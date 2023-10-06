@@ -278,7 +278,7 @@ K4AROSDevice::K4AROSDevice()
   if (params_.body_tracking_enabled) {
     // body_tracking_data
     body_markers_array_stamped_publisher_ = this->create_publisher<MarkerArrayStamped>("body_tracking_data", 1);
-    body_markers_array_publisher_ = this->create_publisher<MarkerArray>("body_tracking_data_vis", 1);
+    body_markers_array_publisher_ = this->create_publisher<MarkerArray>("body_tracking_viz_markers", 1);
 
     body_index_map_publisher_ = image_transport::create_publisher(this,"body_index_map/image_raw");
   }
@@ -1044,7 +1044,7 @@ void K4AROSDevice::framePublisherThread()
         // Publish body markers when body tracking is enabled and a depth image is available
         if (params_.body_tracking_enabled && k4abt_tracker_queue_size_ < 3 &&
             (this->count_subscribers("body_tracking_data") > 0 || 
-             this->count_subscribers("body_tracking_data_vis") > 0 ||
+             this->count_subscribers("body_tracking_viz_markers") > 0 ||
              this->count_subscribers("body_index_map/image_raw") > 0 ))
         {
           if (!k4abt_tracker_.enqueue_capture(capture))
@@ -1213,7 +1213,7 @@ void K4AROSDevice::bodyPublisherThread()
       {
         auto capture_time = timestampToROS(body_frame.get_device_timestamp());
         
-        if (this->count_subscribers("body_tracking_data") > 0 || this->count_subscribers("body_tracking_data_vis") > 0)
+        if (this->count_subscribers("body_tracking_data") > 0 || this->count_subscribers("body_tracking_viz_markers") > 0)
         {
           // Joint marker array
           MarkerArrayStamped::SharedPtr markerArrayStampedPtr(new MarkerArrayStamped);
@@ -1231,13 +1231,17 @@ void K4AROSDevice::bodyPublisherThread()
             }
           }
 
-          body_markers_array_publisher_->publish(*markerArrayPtr);
-
-          markerArrayStampedPtr->header.stamp = capture_time;
-          markerArrayStampedPtr->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
-          markerArrayStampedPtr->markers = markerArrayPtr->markers;
-
+          if (this->count_subscribers("body_tracking_viz_markers") > 0) 
+          {
+            body_markers_array_publisher_->publish(*markerArrayPtr);
+          } 
+          if (this->count_subscribers("body_tracking_data") > 0) 
+          {
+            markerArrayStampedPtr->header.stamp = capture_time;
+            markerArrayStampedPtr->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
+            markerArrayStampedPtr->markers = markerArrayPtr->markers;
           body_markers_array_stamped_publisher_->publish(*markerArrayStampedPtr);
+          }
         }
 
         if (this->count_subscribers("body_index_map/image_raw") > 0)
