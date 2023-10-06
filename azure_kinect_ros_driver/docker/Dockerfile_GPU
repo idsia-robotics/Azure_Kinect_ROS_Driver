@@ -81,6 +81,7 @@ RUN chmod a+rwx /etc/udev/rules.d
 # ros stuff for kinect
 RUN apt-get update \
     && apt install python3-colcon-common-extensions -y \
+    dos2unix \
     ros-humble-xacro \
     ros-humble-launch-xml \
     ros-humble-cv-bridge \
@@ -96,6 +97,8 @@ RUN git -C /ros_ws/src/ clone -b driver https://github.com/idsia-robotics/Azure_
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
+
+RUN dos2unix -n /ros_entrypoint.sh /ros_entrypoint.sh
 
 RUN source /ros_entrypoint.sh \
     && cd /ros_ws \
