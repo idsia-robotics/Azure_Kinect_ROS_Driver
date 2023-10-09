@@ -4,6 +4,8 @@ To use body tracking on GPU, you need a docker installation supporting CUDAs, li
 Otherwise, a regular docker installation is enough for using the driver on CPU (the body tracking will be super-slow).
 
 ### Windows
+At the moment, I do not have an easy way to make the kinect visible in a container on a Windows host.
+The instruction are to install everything and run everything. As soon as one can connect the kinect to the container, these should be valid.
 To use body tracking on GPU, you need a docker installation supporting CUDAs, which we didn't test yet.
 For the CPU version, we tested with [docker](https://docs.docker.com/desktop/windows/install/) using `Windows Subsystem for Linux (WSL2)` backend.
 Also, you have to install [VcXsrv Windows X Server](https://sourceforge.net/projects/vcxsrv/). 

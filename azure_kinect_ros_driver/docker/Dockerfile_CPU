@@ -94,4 +94,6 @@ RUN /bin/sed -i \
   '/source "\/opt\/ros\/$ROS_DISTRO\/setup.bash"/a source "\/ros_ws\/install\/setup.bash"' \
   /ros_entrypoint.sh
 
+RUN rm -rf /kinect_tmp
+
 ENTRYPOINT ["/ros_entrypoint.sh"]
