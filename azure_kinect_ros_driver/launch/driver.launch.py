@@ -47,15 +47,16 @@ def generate_launch_description():
 
     # Variable used for the flag to publish a standalone azure_description instead of the default robot_description parameter
     remappings = [('robot_description', 'azure_description')]
-    use_feedback_node = launch.substitutions.PythonExpression(
-        [launch.substitutions.LaunchConfiguration('audio_feedback'), ' or ', launch.substitutions.LaunchConfiguration('telegram_feedback')]
-        )
     
     return LaunchDescription([
     DeclareLaunchArgument(
         'overwrite_robot_description',
         default_value="true" ,
         description="Flag to publish a standalone azure_description instead of the default robot_description parameter."),
+    DeclareLaunchArgument(
+        'tf_prefix',
+        default_value="" ,
+        description="TF prefix"),
     ##############################################
     DeclareLaunchArgument(
         'depth_enabled',
@@ -159,6 +160,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {'depth_enabled': launch.substitutions.LaunchConfiguration('depth_enabled')},
+            {'tf_prefix': launch.substitutions.LaunchConfiguration('tf_prefix')},
             {'depth_mode': launch.substitutions.LaunchConfiguration('depth_mode')},
             {'depth_unit': launch.substitutions.LaunchConfiguration('depth_unit')},
             {'color_enabled': launch.substitutions.LaunchConfiguration('color_enabled')},
@@ -190,7 +192,8 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
-        parameters = [{'robot_description' : urdf}],
+        parameters = [{'robot_description' : urdf},
+                      {'frame_prefix' : launch.substitutions.LaunchConfiguration('tf_prefix')}],
         condition=conditions.IfCondition(launch.substitutions.LaunchConfiguration("overwrite_robot_description"))),
     launch_ros.actions.Node(
         package='joint_state_publisher',
@@ -203,7 +206,8 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
-        parameters = [{'robot_description' : urdf}],
+        parameters = [{'robot_description' : urdf},
+                      {'frame_prefix' : launch.substitutions.LaunchConfiguration('tf_prefix')}],
         remappings=remappings,
         condition=conditions.UnlessCondition(launch.substitutions.LaunchConfiguration("overwrite_robot_description"))),
     launch_ros.actions.Node(
