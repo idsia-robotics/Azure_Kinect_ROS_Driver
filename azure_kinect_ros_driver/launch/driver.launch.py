@@ -58,6 +58,10 @@ def generate_launch_description():
         description="Flag to publish a standalone azure_description instead of the default robot_description parameter."),
     ##############################################
     DeclareLaunchArgument(
+        'camera_type',
+        default_value="kinect",
+        description="Specifies which camera is being used: kinect, femto."),
+    DeclareLaunchArgument(
         'depth_enabled',
         default_value="true",
         description="Enable or disable the depth camera"),
@@ -158,6 +162,7 @@ def generate_launch_description():
         executable='node',
         output='screen',
         parameters=[
+            {'camera_type': launch.substitutions.LaunchConfiguration('camera_type')},
             {'depth_enabled': launch.substitutions.LaunchConfiguration('depth_enabled')},
             {'depth_mode': launch.substitutions.LaunchConfiguration('depth_mode')},
             {'depth_unit': launch.substitutions.LaunchConfiguration('depth_unit')},

@@ -59,6 +59,7 @@ K4AROSDevice::K4AROSDevice()
   static const std::string compressed_png_level = "/compressed/png_level";
 
   // Declare node parameters
+  this->declare_parameter("camera_type", rclcpp::ParameterValue("kinect"));
   this->declare_parameter("depth_enabled", rclcpp::ParameterValue(true));
   this->declare_parameter("depth_mode", rclcpp::ParameterValue("NFOV_UNBINNED"));
   this->declare_parameter("color_enabled", rclcpp::ParameterValue(false));
@@ -1477,8 +1478,13 @@ void K4AROSDevice::updateTimestampOffset(const std::chrono::microseconds& k4a_de
   std::chrono::nanoseconds monotonic_to_realtime = realtime_clock - monotonic_clock;
 
   // Next figure out the other part (combined).
-  std::chrono::nanoseconds device_to_realtime =
-      k4a_system_timestamp_ns - k4a_device_timestamp_us + monotonic_to_realtime;
+  std::chrono::nanoseconds device_to_realtime;
+  if (params_.camera_type == "kinect") {
+      device_to_realtime = k4a_system_timestamp_ns - k4a_device_timestamp_us + monotonic_to_realtime;
+  } 
+  if (params_.camera_type == "femto") {
+      device_to_realtime = realtime_clock - k4a_device_timestamp_us;
+  }
   // If we're over a second off, just snap into place.
   if (device_to_realtime_offset_.count() == 0 ||
       std::abs((device_to_realtime_offset_ - device_to_realtime).count()) > 1e7)

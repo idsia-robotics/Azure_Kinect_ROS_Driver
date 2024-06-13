@@ -31,6 +31,7 @@
 // LIST_ENTRY(sensor_sn, "The serial number of the sensor this node should connect with", std::string, std::string(""))
 #define ROS_PARAM_LIST                                                                                                 \
   LIST_ENTRY(sensor_sn, "The serial number of the sensor this node should connect to.", std::string, std::string(""))  \
+  LIST_ENTRY(camera_type, "Specifies which camera is being used", std::string, std::string("kinect"))                                      \
   LIST_ENTRY(depth_enabled, "True if depth camera should be enabled", bool, true)                                      \
   LIST_ENTRY(depth_unit, "Depth distance units. Options are: "+                                                        \
                          sensor_msgs::image_encodings::TYPE_32FC1+" (32 bit float metre) or "+                         \
