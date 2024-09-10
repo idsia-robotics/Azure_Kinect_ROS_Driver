@@ -18,7 +18,10 @@
     <color rgba="0.9 0.9 0.9 1" />
   </material>
 
-  <link name="camera_body">
+  <!-- Define tf_prefix -->
+  <xacro:property name="tf_prefix" value="azure_kinect" />
+
+  <link name="${tf_prefix}_camera_body">
     <visual>
       <origin xyz="0. 0. 0." />
       <geometry>
@@ -28,7 +31,7 @@
     </visual>
   </link>
 
-  <link name="camera_base">
+  <link name="${tf_prefix}_camera_base">
     <visual>
       <origin xyz="-0.013 0. 0." />
       <geometry>
@@ -38,7 +41,7 @@
     </visual>
   </link>
 
-  <link name="camera_visor">
+  <link name="${tf_prefix}_camera_visor">
     <visual>
       <origin xyz="-0.0128 0. 0." />
       <geometry>
@@ -49,14 +52,14 @@
   </link>
 
   <joint name="camera_base_to_body" type="fixed">
-    <parent link="camera_base" />
-    <child link="camera_body" />
+    <parent link="${tf_prefix}_camera_base" />
+    <child link="${tf_prefix}_camera_body" />
     <origin xyz="-0.0757 0. 0.008" rpy="0. 0. 0." />
   </joint>
 
   <joint name="camera_base_to_visor" type="fixed">
-    <parent link="camera_base" />
-    <child link="camera_visor" />
+    <parent link="${tf_prefix}_camera_base" />
+    <child link="${tf_prefix}_camera_visor" />
     <origin xyz="0. 0. 0." rpy="0. 0. 0." />
   </joint>
 </robot>

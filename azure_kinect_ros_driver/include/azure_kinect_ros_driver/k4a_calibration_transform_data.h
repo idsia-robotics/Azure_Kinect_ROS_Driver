@@ -49,10 +49,10 @@ public:
   k4a::image transformed_depth_image_;
 
   std::string tf_prefix_ = "";
-  std::string camera_base_frame_ = "camera_base";
-  std::string rgb_camera_frame_ = "rgb_camera_link";
-  std::string depth_camera_frame_ = "depth_camera_link";
-  std::string imu_frame_ = "imu_link";
+  std::string camera_base_frame_ = "azure_kinect_camera_base";
+  std::string rgb_camera_frame_ = "azure_kinect_rgb_camera_link";
+  std::string depth_camera_frame_ = "azure_kinect_depth_camera_link";
+  std::string imu_frame_ = "azure_kinect_imu_link";
 
 private:
   void initialize(const K4AROSDeviceParams& params);
