@@ -1214,11 +1214,10 @@ void K4AROSDevice::bodyPublisherThread()
       {
         auto capture_time = timestampToROS(body_frame.get_device_timestamp());
         
-        if (this->count_subscribers("body_tracking_data") > 0 || this->count_subscribers("body_tracking_data_vis") > 0)
+        if (this->count_subscribers("body_tracking_data") > 0)
         {
           // Joint marker array
           MarkerArrayStamped::SharedPtr markerArrayStampedPtr(new MarkerArrayStamped);
-          MarkerArray::SharedPtr markerArrayPtr(new MarkerArray);
 
           auto num_bodies = body_frame.get_num_bodies();
           for (size_t i = 0; i < num_bodies; ++i)
@@ -1228,17 +1227,34 @@ void K4AROSDevice::bodyPublisherThread()
             {
               Marker::SharedPtr markerPtr(new Marker);
               getBodyMarker(body, markerPtr, j, capture_time);
+              markerArrayStampedPtr->markers.push_back(*markerPtr);
+            }
+          }
+
+          markerArrayStampedPtr->header.stamp = capture_time;
+          markerArrayStampedPtr->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
+
+          body_markers_array_stamped_publisher_->publish(*markerArrayStampedPtr);
+        }
+
+        if (this->count_subscribers("body_tracking_data_vis") > 0)
+        {
+          // Joint marker array
+          MarkerArray::SharedPtr markerArrayPtr(new MarkerArray);
+
+          auto num_bodies = body_frame.get_num_bodies();
+          for (size_t i = 0; i < num_bodies; ++i)
+          {
+            k4abt_body_t body = body_frame.get_body(i);
+            for (int j = 0; j < (int) K4ABT_JOINT_COUNT; ++j)
+            {
+              Marker::SharedPtr markerPtr(new Marker);
+              getBodyMarker(body, markerPtr, j, rclcpp::Time(0));
               markerArrayPtr->markers.push_back(*markerPtr);
             }
           }
 
           body_markers_array_publisher_->publish(*markerArrayPtr);
-
-          markerArrayStampedPtr->header.stamp = capture_time;
-          markerArrayStampedPtr->header.frame_id = calibration_data_.tf_prefix_ + calibration_data_.depth_camera_frame_;
-          markerArrayStampedPtr->markers = markerArrayPtr->markers;
-
-          body_markers_array_stamped_publisher_->publish(*markerArrayStampedPtr);
         }
 
         if (this->count_subscribers("body_index_map/image_raw") > 0)
