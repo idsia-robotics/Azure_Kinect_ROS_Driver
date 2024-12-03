@@ -53,6 +53,10 @@ def generate_launch_description():
     
     return LaunchDescription([
     DeclareLaunchArgument(
+        'respawn',
+        default_value="true" ,
+        description="Whether to respawn node after fail."),
+    DeclareLaunchArgument(
         'overwrite_robot_description',
         default_value="false" ,
         description="Flag to publish a standalone azure_description instead of the default robot_description parameter."),
@@ -161,6 +165,8 @@ def generate_launch_description():
         package='azure_kinect_ros_driver',
         executable='node',
         output='screen',
+        respawn=launch.substitutions.LaunchConfiguration('respawn'),
+        respawn_delay=5,
         parameters=[
             {'camera_type': launch.substitutions.LaunchConfiguration('camera_type')},
             {'depth_enabled': launch.substitutions.LaunchConfiguration('depth_enabled')},
